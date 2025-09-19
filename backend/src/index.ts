@@ -11,14 +11,12 @@ app.use(express.json());
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://your-frontend.vercel.app"
+    "https://your-frontend.vercel.app" // production frontend
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
-
-app.options("*", cors());
 
 app.use('/auth', authRoutes);
 
