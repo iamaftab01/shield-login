@@ -1,7 +1,7 @@
 # shield-login
 A full-stack login system with built-in brute-force protection. Implements both per-user account suspension and per-IP blocking to defend against repeated failed login attempts.
 
-## 🔧 Setup Instructions
+## Setup Instructions
 
 ### Backend
 ```bash
@@ -40,9 +40,38 @@ PORT=4000
   - Frontend → Vercel  
   - DB → Supabase  
 
+## Database Schema
+
+### users
+| Column        | Type        | Constraints                       |
+|---------------|-------------|-----------------------------------|
+| id            | SERIAL      | PRIMARY KEY                       |
+| email         | VARCHAR(255)| UNIQUE, NOT NULL                  |
+| password_hash | VARCHAR(255)| NOT NULL                          |
+| created_at    | TEXT        | ISO timestamp (UTC), default now  |
+
+### login_counters
+| Column       | Type        | Constraints                       |
+|--------------|-------------|-----------------------------------|
+| id           | SERIAL      | PRIMARY KEY                       |
+| user_id      | INT         | Nullable (null = unknown user)    |
+| ip_address   | VARCHAR(50) | NOT NULL                          |
+| fail_count   | INT         | DEFAULT 0                         |
+| window_start | TEXT        | ISO timestamp (UTC), NOT NULL     |
+| UNIQUE(user_id, ip_address)                                  |
+
+### suspensions
+| Column          | Type        | Constraints                       |
+|-----------------|-------------|-----------------------------------|
+| id              | SERIAL      | PRIMARY KEY                       |
+| user_id         | INT         | Nullable (null = IP suspension)   |
+| ip_address      | VARCHAR(50) | Nullable                          |
+| suspended_until | TEXT        | ISO timestamp (UTC), NOT NULL     |
+| suspension_type | VARCHAR(20) | CHECK ('USER' or 'IP')            |
+
+
 ## Screenshots
 
 ![Database](assets/images/image.png)
 ![Frontend on Vercel](assets/images/image-1.png)
 ![Backend on Render](assets/images/image-2.png)
-
